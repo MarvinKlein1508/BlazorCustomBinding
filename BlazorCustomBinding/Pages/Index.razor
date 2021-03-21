@@ -1,0 +1,63 @@
+﻿@page "/"
+@using BlazorCustomBinding.Data
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<EditForm Model="Customer">
+    <div class="form-group">
+        <label>Address</label>
+        <InputSelect class="form-control"
+                     Value="Customer.CustomerId"
+                     ValueExpression="() => Customer.CustomerId"
+                     ValueChanged="(int addressId) => AddressChangedAsync(addressId)">
+            <option value="0">None</option>
+            @foreach (var address in _addresses)
+            {
+                <option value="@address.AddressId">@address.Address</option>
+            }
+        </InputSelect>
+
+    </div>
+
+
+</EditForm>
+
+
+@code
+{
+
+    public Customer Customer { get; set; } = new Customer
+    {
+        CustomerId = 1,
+        CustomerName = "Marvin Klein"
+    };
+
+    private List<Address> _addresses = new List<Address>
+{
+       new Address
+       {
+            AddressId = 1,
+            Street = "Testaddress 1"
+       },
+       new Address
+       {
+            AddressId = 2,
+            Street = "Testaddress 2"
+       },
+       new Address
+       {
+            AddressId = 3,
+            Street = "Testaddress 3"
+       }
+    };
+
+    private Task AddressChangedAsync(int addressId)
+    {
+        Customer.AddressId = addressId;
+        Customer.Address = _addresses.Where(x => x.AddressId == addressId).FirstOrDefault();
+        return Task.CompletedTask;
+    }
+
+
+}
